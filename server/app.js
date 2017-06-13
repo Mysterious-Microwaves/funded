@@ -1,16 +1,20 @@
 'use strict';
 const express = require('express');
-const middleware = require('./middleware');
 const routes = require('./routes');
-
+const bodyParser = require('body-parser');
+const redis = require('../redis');
+const psql = require('../psql');
+const utils = require('../utils');
+const cronWorker = require('../workers/cron.js');
 const app = express();
 
-app.use(middleware.morgan('dev'));
-app.use(middleware.bodyParser.urlencoded({ extended: false }));
-app.use(middleware.bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
-app.get('/', (req, res) => {
-  res.status(200).send('Hello World');
-})
+app.get('/getFunding', (req, res) => {
+  utils.retrieve.readAll(req.query.data, res);
+});
+
+cronWorker.init();
 
 module.exports = app;
