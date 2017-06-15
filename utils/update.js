@@ -51,7 +51,7 @@ const addGoal = function(projectId) {
 const checkNearlyFunded = function(id, amount, goal, change) {
   var initialPercent = amount / goal;
   var futurePercent = (amount + change) / goal;
-
+    // console.log('id', id)
   if (futurePercent >= .5 && futurePercent < 1) {
     redis.saddAsync('nearlyFunded', id)
   } else if (initialPercent >= .5 && futurePercent < 1) {
@@ -111,14 +111,16 @@ module.exports.writeAll = function() {
         return acc + collection.attributes.amount;
       }, 0);
       redis.HMSET(project.attributes.id, {
-        total: total,
-        goal: project.attributes.goal,
-        pledges: project.relations.collections.length
+        'total': total,
+        'goal': project.attributes.goal,
+        'pledges': project.relations.collections.length
       });
       checkNearlyFunded(project.attributes.id, total, project.attributes.goal, 0);
     });
   })
-  .catch(logError);
+  .catch(error => {
+    console.log('ERROR: ', error)
+  });
 };
 
 
