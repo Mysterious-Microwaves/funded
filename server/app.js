@@ -1,6 +1,5 @@
 'use strict';
 const express = require('express');
-const routes = require('./routes');
 const bodyParser = require('body-parser');
 const redis = require('../redis');
 const psql = require('../psql');
@@ -13,6 +12,10 @@ app.use(bodyParser.json());
 
 app.get('/getFunding', (req, res) => {
   utils.retrieve.readAll(req.query.data, res);
+});
+
+app.get('/getNearlyFunded', (req, res) => {
+  utils.retrieve.getNearlyFunded(res);
 });
 
 cronWorker.init();
