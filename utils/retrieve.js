@@ -31,6 +31,11 @@ module.exports.getNearlyFunded = function(res) {
   redis.smembersAsync('nearlyFunded')
   .then(projects => {
     var augmentedProjects = [];
+
+    if (projects.length === 0) {
+      res.send([]);
+    }
+    
     for (let i = 0; i < projects.length; i++) {
       redis.hgetallAsync(projects[i])
       .then(project => {
